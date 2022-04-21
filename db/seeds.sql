@@ -1,2 +1,4 @@
-INSERT INTO;
-VALUES;
+USE employeesdb;
+
+INSERT INTO department (name) 
+VALUES ('Sales') ;

@@ -1,15 +1,8 @@
 const mysql = require('mysql2');
-const express = require('express');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
 require('dotenv').config();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 // Connect to database
 const db = mysql.createConnection({
@@ -20,15 +13,45 @@ const db = mysql.createConnection({
         password: process.env.DB_PASS,
         database: process.env.DB_NAME
     },
-    console.log('Connected to the election database.')
+    console.log('Connected to the employee tracker database.')
+
 );
 
 
-// Default response for any other request (Not Found)
-app.use((req, res) => {
-    res.status(404).end();
-});
+function userPrompts() {
+    inquirer.prompt(
+        [{
+            type: "list",
+            message: "what would you like to do?",
+            choices: ["add a department", 'View All Departments', "add a role", 'View All Roles', "add an employee", 'View All Employees', "Update Employe Role", "Exit"],
+            name: 'userNav'
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+        }]
+    )
+
+    .then(answer => {
+        if (answer.userNav === 'View All Departments') {
+            //creta new function to add data to db 
+            db.query('SELECT * from department', (error, results) => {
+                if (error) throw error;
+                //display results i ntable format 
+                console.table(results);
+
+                //ask the question again 
+
+                userPrompts();
+            })
+
+
+        } else {
+            //in case of exit 
+
+            console.log("Goodbye")
+            process.exit(0);
+        }
+    });
+}
+
+
+//start point 
+userPrompts();
