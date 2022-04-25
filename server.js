@@ -22,8 +22,20 @@ function userPrompts() {
     inquirer.prompt(
         [{
             type: "list",
-            message: "what would you like to do?",
-            choices: ["add a department", 'View All Departments', "add a role", 'View All Roles', "add an employee", 'View All Employees', "Update Employe Role", "Exit"],
+            message: "What would you like to do?",
+            choices: ['View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Delete a department',
+                'Add a role',
+                'Delete a role',
+                'Add an employee',
+                'Delete an employee',
+                "Update an employee's role",
+                "Update an employee's manager",
+                'Quit'
+            ],
             name: 'userNav'
 
         }]
