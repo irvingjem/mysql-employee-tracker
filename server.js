@@ -41,7 +41,10 @@ function userPrompts() {
             }]
         )
         .then(answer => {
-            if (answer.userNav === 'View All Departments') {
+                let choice = answer.choice;
+                switch (choice) {
+                    case 'View all departments'
+                }
                 // create new function to add data to db 
                 db.query('SELECT * from department', (error, results) => {
                     if (error) throw error;
@@ -50,10 +53,22 @@ function userPrompts() {
 
                     //ask the question again 
                     userPrompts();
-                })
+                });
 
                 // Functions needed
+                // View all departments
+                const viewAllDepartments = () => {
+                    db.findAllDepartments()
+                        // create readability of parsed data 
+                        .then(([rows]) => {
+                            let departments = rows;
+                            console.table(departments);
+                        })
+                        .then(() => userPrompts());
+                };
+                // View all roles
                 // Add a role
+
                 // Delete a Role
                 // Add an Employee
                 // Delete an employee
