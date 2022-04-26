@@ -3,6 +3,7 @@ require('dotenv').config();
 // Connect to database
 const db = mysql.createConnection({
         host: 'localhost',
+        // Using dotenv for security and hiding passwords
         // Your MySQL username,
         user: process.env.DB_USER,
         // Your MySQL password
