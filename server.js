@@ -41,7 +41,7 @@ function userPrompts() {
             }]
         )
         .then(answer => {
-            let choice = answer.choice;
+            let choice = answer.userNav;
             switch (choice) {
                 case 'View all departments':
                     viewAllDepartments();
@@ -201,30 +201,179 @@ const deleteRole = () => {
 };
 // Add an Employee
 const addEmployee = () => {
-        inquirer.prompt([{
-                    type: 'input',
-                    name: 'first_name',
-                    message: "Please enter the employee's first name"
-                },
-                {
-                    type: 'input',
-                    name: 'last_name',
-                    message: "Please enter the employee's last name"
-                }
-            ])
-            // Delete an employee
-            // Update an employee
-            // Update an employee manager
+    inquirer.prompt([{
+                type: 'input',
+                name: 'first_name',
+                message: "Please enter the employee's first name"
+            },
+            {
+                type: 'input',
+                name: 'last_name',
+                message: "Please enter the employee's last name"
+            }
+        ])
+        .then(res => {
+            let firstName = res.first_name;
+            let lastName = res.last_name;
+
+            db.findAllRoles()
+                .then(([rows]) => {
+                    let roles = rows;
+                    const roleNames = roles.map(({ id, job_title }) => ({
+                        name: job_title,
+                        value: id
+                    }));
+
+                    inquirer.prompt([{
+                            type: 'list',
+                            name: 'role',
+                            message: "Please select the employee's role?",
+                            choices: roleNames
+                        }])
+                        .then(res => {
+                            let role = res.role;
+
+                            db.findAllEmployees()
+                                .then(([rows]) => {
+                                    let employees = rows;
+                                    const managerNames = employees.map(({ id, first_name, last_name }) => ({
+                                        name: `${first_name} ${last_name}`,
+                                        value: id
+                                    }));
+
+                                    // add 'none' to manager choices
+                                    managerNames.unshift({ name: 'None', value: null });
+
+                                    inquirer.prompt([{
+                                            type: 'list',
+                                            name: 'manager',
+                                            message: "Please select the employee's manager?",
+                                            choices: managerNames
+                                        }])
+                                        .then(res => {
+                                            let employee = {
+                                                manager_id: res.manager,
+                                                role_id: role,
+                                                first_name: firstName,
+                                                last_name: lastName
+                                            }
+
+                                            db.addEmployee(employee)
+                                                .then(() => console.log(`Added ${firstName} ${lastName} to the database!`))
+                                                .then(() => userPrompts());
+                                        });
+                                });
+                        });
+                });
+        });
+};
+// Delete an employee
+const deleteEmployee = () => {
+    db.findAllEmployees()
+        .then(([rows]) => {
+            let employees = rows;
+            const employeeNames = employees.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+            }));
+
+            inquirer.prompt([{
+                    type: 'list',
+                    name: 'employee',
+                    message: "Please select the employee would you like to remove?",
+                    choices: employeeNames
+                }])
+                .then(res => db.deleteEmployee(res.employee))
+                .then(() => console.log('Employee has been removed from the database successfully!'))
+                .then(() => userPrompts());
+        });
+};
+// Update an employee
+const updateEmployeeRole = () => {
+    db.findAllEmployees()
+        .then(([rows]) => {
+            let employees = rows;
+            const employeeNames = employees.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+            }));
+
+            inquirer.prompt([{
+                    type: 'list',
+                    name: 'employee',
+                    message: "Select employee you want to update",
+                    choices: employeeNames
+                }])
+                .then(res => {
+                    let employee = res.employee
+                    db.findAllRoles()
+                        .then(([rows]) => {
+                            let roles = rows;
+                            const roleNames = roles.map(({ id, job_title }) => ({
+                                name: job_title,
+                                value: id
+                            }));
+
+                            inquirer.prompt([{
+                                    type: 'list',
+                                    name: 'role',
+                                    message: "Please select the new role for select employee",
+                                    choices: roleNames
+                                }])
+                                .then(res => db.updateEmployeeRole(employee, res.role))
+                                .then(() => console.log("Updated employee's role!"))
+                                .then(() => userPrompts());
+                        });
+                });
+        });
+};
+// Update an employee manager
+const updateEmployeeManager = () => {
+    db.findAllEmployees()
+        .then(([rows]) => {
+            let employees = rows;
+            const employeeNames = employees.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+            }));
+
+            inquirer.prompt([{
+                    type: 'list',
+                    name: 'employee',
+                    message: "Please select the employee's manager do you want to update?",
+                    choices: employeeNames
+                }])
+                .then(res => {
+                    let employee = res.employee
+                    db.findAllManagers(employee)
+                        .then(([rows]) => {
+                            let managers = rows;
+                            const managerNames = managers.map(({ id, first_name, last_name }) => ({
+                                name: `${first_name} ${last_name}`,
+                                value: id
+                            }));
+
+                            inquirer.prompt([{
+                                    type: 'list',
+                                    name: 'manager',
+                                    message: "Please select a manager to assign to the selected employee?",
+                                    choices: managerNames
+                                }])
+                                .then(res => db.updateEmployeeManager(employee, res.manager))
+                                .then(() => console.log("Updated employee's manager!"))
+                                .then(() => userPrompts());
+                        });
+                });
+        });
+
+};
 
 
-        //Function to exit application
-        const exit = () => {
-            console.log("Goodbye")
-            process.exit(0);
-        }
+//Function to exit application
+const exit = () => {
+    console.log("Goodbye")
+    process.exit(0);
+}
 
-
-
-
-        //start point 
-        userPrompts();
+//start point 
+userPrompts();
