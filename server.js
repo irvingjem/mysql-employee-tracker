@@ -82,10 +82,6 @@ function userPrompts() {
         });
 };
 
-//ask the question again 
-userPrompts();
-});
-
 // Functions needed
 // View all departments
 const viewAllDepartments = () => {
@@ -118,7 +114,7 @@ const addDepartment = () => {
         .then(res => {
             let name = res;
             db.addDepartment(name)
-                .then(() => console.log(`Added ${name.name} to the database successfully!`))
+                .then(() => console.log(`Added ${name.name} to the database!`))
                 .then(() => userPrompts());
         });
 };
@@ -148,30 +144,87 @@ const deleteDepartment = () => {
 const addRole = () => {
     db.findAllDepartments()
         .then(([rows]) => {
-                let departments = rows;
+            let departments = rows;
 
-                // map through departments and turn them into an array
-                const departmentNames = departments.map(({ id, department }) => ({
-                    name: department,
-                    value: id
-                }));
+            // map through departments and turn them into an array
+            const departmentNames = departments.map(({ id, department }) => ({
+                name: department,
+                value: id
+            }));
 
-                // Delete a Role
-                // Add an Employee
-                // Delete an employee
-                // Update an employee
-                // Update an employee manager
-
-
-            } else {
-                //Function to exit application
-
-                console.log("Goodbye")
-                process.exit(0);
-            }
+            // Questions for getting user information
+            inquirer.prompt([{
+                        type: 'input',
+                        name: 'title',
+                        message: 'Please enter a name for the role!'
+                    },
+                    {
+                        type: 'input',
+                        name: 'salary',
+                        message: 'Please enter the salary for the role'
+                    },
+                    {
+                        type: 'list',
+                        name: 'department_id',
+                        message: 'Please indicate which department this role is apart of',
+                        choices: departmentNames
+                    }
+                ])
+                .then(role => {
+                    db.addRole(role)
+                        .then(() => console.log(`Added ${role.title} to the database successfully!`))
+                        .then(() => userPrompts());
+                });
         });
-}
+};
+
+// Delete a Role
+const deleteRole = () => {
+    db.findAllRoles()
+        .then(([rows]) => {
+            let roles = rows;
+            const roleNames = roles.map(({ id, job_title }) => ({
+                name: job_title,
+                value: id
+            }));
+
+            inquirer.prompt([{
+                    type: 'list',
+                    name: 'role',
+                    message: 'Which role would you like to remove?',
+                    choices: roleNames
+                }])
+                .then(res => db.deleteRole(res.role))
+                .then(() => console.log('Role has been removed from the database!'))
+                .then(() => userPrompts());
+        });
+};
+// Add an Employee
+const addEmployee = () => {
+        inquirer.prompt([{
+                    type: 'input',
+                    name: 'first_name',
+                    message: "Please enter the employee's first name"
+                },
+                {
+                    type: 'input',
+                    name: 'last_name',
+                    message: "Please enter the employee's last name"
+                }
+            ])
+            // Delete an employee
+            // Update an employee
+            // Update an employee manager
 
 
-//start point 
-userPrompts();
+        //Function to exit application
+        const exit = () => {
+            console.log("Goodbye")
+            process.exit(0);
+        }
+
+
+
+
+        //start point 
+        userPrompts();
