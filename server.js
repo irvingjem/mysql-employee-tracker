@@ -20,48 +20,54 @@ const db = mysql.createConnection({
 
 function userPrompts() {
     inquirer.prompt(
-        [{
-            type: "list",
-            message: "What would you like to do?",
-            choices: ['View all departments',
-                'View all roles',
-                'View all employees',
-                'Add a department',
-                'Delete a department',
-                'Add a role',
-                'Delete a role',
-                'Add an employee',
-                'Delete an employee',
-                "Update an employee's role",
-                "Update an employee's manager",
-                'Quit'
-            ],
-            name: 'userNav'
+            [{
+                type: "list",
+                message: "What would you like to do?",
+                choices: ['View all departments',
+                    'View all roles',
+                    'View all employees',
+                    'Add a department',
+                    'Delete a department',
+                    'Add a role',
+                    'Delete a role',
+                    'Add an employee',
+                    'Delete an employee',
+                    "Update an employee's role",
+                    "Update an employee's manager",
+                    'Quit'
+                ],
+                name: 'userNav'
 
-        }]
-    )
+            }]
+        )
+        .then(answer => {
+            if (answer.userNav === 'View All Departments') {
+                // create new function to add data to db 
+                db.query('SELECT * from department', (error, results) => {
+                    if (error) throw error;
+                    //display results in table format 
+                    console.table(results);
 
-    .then(answer => {
-        if (answer.userNav === 'View All Departments') {
-            //creta new function to add data to db 
-            db.query('SELECT * from department', (error, results) => {
-                if (error) throw error;
-                //display results i ntable format 
-                console.table(results);
+                    //ask the question again 
+                    userPrompts();
+                })
 
-                //ask the question again 
+                // Functions needed
+                // Add a role
+                // Delete a Role
+                // Add an Employee
+                // Delete an employee
+                // Update an employee
+                // Update an employee manager
 
-                userPrompts();
-            })
 
+            } else {
+                //Function to exit application
 
-        } else {
-            //in case of exit 
-
-            console.log("Goodbye")
-            process.exit(0);
-        }
-    });
+                console.log("Goodbye")
+                process.exit(0);
+            }
+        });
 }
 
 
