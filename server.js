@@ -1,6 +1,8 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const db = require('./db');
 const consoleTable = require('console.table');
+
 
 function userPrompts() {
     inquirer.prompt(
