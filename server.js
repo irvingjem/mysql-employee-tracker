@@ -90,6 +90,17 @@ const viewAllRoles = () => {
         // send user back to prompts
         .then(() => userPrompts());
 };
+
+// view all employees
+const viewAllEmployees = () => {
+    db.findAllEmployees()
+        .then(([rows]) => {
+            let employees = rows;
+            console.table(employees);
+        })
+        .then(() => userPrompts());
+};
+
 // Add department
 const addDepartment = () => {
     inquirer.prompt([{

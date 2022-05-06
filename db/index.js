@@ -19,11 +19,11 @@ class Database {
     };
     // All employees
     findAllEmployees() {
-        return this.connection.promise().query("SELECT employee.id, employee.first_name, employee.last_name, role.title AS job_title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;");
+        return this.connection.promise().query("SELECT employees.id, employees.first_name, employees.last_name, role.title AS job_title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employees LEFT JOIN role on employees.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employees manager on manager.id = employees.manager_id;");
     };
     // All managers
     findAllManagers(employeeId) {
-        return this.connection.promise().query("SELECT id, first_name, last_name FROM employee WHERE id != ?", employeeId);
+        return this.connection.promise().query("SELECT id, first_name, last_name FROM employees WHERE id != ?", employeeId);
     };
     // Add departments
     addDepartment(department) {
