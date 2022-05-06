@@ -29,8 +29,8 @@ This a project was built using <br>
 * javaScript
 
 ## Demo
-    ![employee tracker example video](/walkthrough/employee-database-functions.gif) <br>
-    https://drive.google.com/file/d/1ATCVoIUHNG9U85niB46q8P_l4qEgqs6S/view Link to video
+![employee tracker example video](/walkthrough/employee-database-functions.gif) <br>
+https://drive.google.com/file/d/1ATCVoIUHNG9U85niB46q8P_l4qEgqs6S/view Link to video
 ## Author 
 Me :)
 
