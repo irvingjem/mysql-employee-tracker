@@ -43,19 +43,19 @@ class Database {
     };
     // Add employee
     addEmployee(employee) {
-        return this.connection.promise().query("INSERT INTO employee SET ?", employee);
+        return this.connection.promise().query("INSERT INTO employees SET ?", employee);
     };
     // Delete employee
     deleteEmployee(employeeId) {
-        return this.connection.promise().query("DELETE FROM employee WHERE id = ?", employeeId);
+        return this.connection.promise().query("DELETE FROM employees WHERE id = ?", employeeId);
     };
     // Update employee role
     updateEmployeeRole(employeeId, roleId) {
-        return this.connection.promise().query("UPDATE employee SET role_id = ? WHERE id = ?", [roleId, employeeId]);
+        return this.connection.promise().query("UPDATE employees SET role_id = ? WHERE id = ?", [roleId, employeeId]);
     };
     // Update manager role
     updateEmployeeManager(employeeId, managerId) {
-        return this.connection.promise().query("UPDATE employee SET manager_id = ? WHERE id = ?", [managerId, employeeId]);
+        return this.connection.promise().query("UPDATE employees SET manager_id = ? WHERE id = ?", [managerId, employeeId]);
     };
 };
 
